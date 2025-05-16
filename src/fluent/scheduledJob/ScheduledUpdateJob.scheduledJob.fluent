@@ -1,0 +1,12 @@
+scheduledJob({
+  name: "UpdateAll Plugins Weekly Job",
+  scriptName: "UpdateAllPlugins",
+  runAs: "system",
+  runType: "weekly",
+  runDayOfMonth: "1",
+  runDayOfWeek: "7",
+  runMonth: "0",
+  runTime: "00:00:00",
+  active: true,
+  description: "Updates all available plugins to their latest versions. Runs weekly on Saturday at midnight."
+}); 

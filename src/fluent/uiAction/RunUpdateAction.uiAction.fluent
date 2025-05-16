@@ -1,0 +1,18 @@
+uiAction({
+  name: "Run Update All Now",
+  actionName: "run_update_all",
+  table: "sys_store_app",
+  formLink: true,
+  condition: "current.update_available==true",
+  script: `
+    // Execute the plugin update script
+    var updateScript = new GlideRecord('sys_script_include');
+    updateScript.get('name', 'UpdateAllPlugins');
+    if (updateScript.isValidRecord()) {
+        var result = eval(updateScript.getValue('script'));
+        action.setRedirectURL(current);
+    } else {
+        gs.addErrorMessage('Unable to find UpdateAllPlugins script');
+    }
+  `
+}); 

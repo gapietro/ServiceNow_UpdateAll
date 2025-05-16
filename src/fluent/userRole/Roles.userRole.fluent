@@ -1,0 +1,5 @@
+userRole({
+  name: "x_snc_updateall.admin",
+  description: "Administrators for the UpdateAll application",
+  elevatedPrivilege: true
+}); 

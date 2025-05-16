@@ -1,0 +1,13 @@
+systemProperty({
+  name: "plugin.update.batch.size",
+  description: "Maximum number of plugins that the batch update script will process in a single execution. This is essential when managing large-scale plugin updates to prevent transaction timeouts.",
+  dataType: "integer",
+  value: "600"
+});
+
+systemProperty({
+  name: "plugin.update.skip.list",
+  description: "Comma-separated list of plugins to skip during automatic updates (by source ID or sys_id)",
+  dataType: "string",
+  value: ""
+}); 
