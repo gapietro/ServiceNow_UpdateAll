@@ -1,0 +1,90 @@
+(function () {
+    var scriptStartTime = new Date();
+    gs.info('Plugin update process ▸ STARTED at ' + scriptStartTime);
+
+    // 1. Build a skip list. Use the **source** or sys_id—whatever you prefer.
+    var skipListProperty = gs.getProperty('plugin.update.skip.list', '');
+    var skip = (skipListProperty || '')
+               .split(',')
+               .map(function (s) {return s.trim();})
+               .filter(function(s) {return s.length > 0;});
+    
+    if (skip.length > 0) {
+        gs.info('Plugin update process ▸ Skipping the following plugins: ' + skip.join(', '));
+    }
+
+    // 2. Find every Store / plugin record that really has an update.
+    var gr = new GlideRecord('sys_store_app');
+    gr.addEncodedQuery('hide_on_ui=false^update_available=true');
+    gr.orderBy('name');
+    gr.query();
+    
+    var upgrader  = new sn_appclient.AppUpgrader();
+    var updated   = [];
+    var skipped   = [];
+    var failed    = [];
+    var total     = gr.getRowCount();
+    
+    gs.info('Plugin update process ▸ Found ' + total + ' updatable plugins');
+
+    // Set a reasonable batch size to avoid transaction timeout issues
+    var maxUpdatesPerRun = parseInt(gs.getProperty('plugin.update.batch.size', '10')) || 10;
+    var updateCount = 0;
+
+    while (gr.next() && updateCount < maxUpdatesPerRun) {
+        // Prefer the stable "source" value for comparisons; sys_id changes every release.
+        var id         = gr.getUniqueValue();          // sys_id of this version record
+        var source     = gr.getValue('source');        // e.g. com.glide.cicd
+        var name       = gr.getValue('name');          // label on the card
+        var currentVer = gr.getValue('version');
+        var newVersion = gr.getValue('latest_version');
+
+        if (skip.indexOf(source) > -1 || skip.indexOf(id) > -1) {
+            skipped.push(name);
+            gs.info('Plugin update ▸ SKIPPED  ' + name + ' (in skip list)');
+            continue;
+        }
+
+        try {
+            gs.info('Plugin update ▸ QUEUED   ' + name + ' [' + currentVer + ' → ' + newVersion + ']');
+            
+            var updateStartTime = new Date();
+            
+            // ────────── THE IMPORTANT PART ──────────
+            // upgrade(sys_id_of_store_record, version_to_install, run_interactive?)
+            upgrader.upgrade(id, newVersion, /*runInteractive=*/false);
+            
+            var updateDuration = (new Date() - updateStartTime) / 1000;
+            
+            updated.push(name);
+            updateCount++;
+            
+            gs.info('Plugin update ▸ COMPLETE ' + name + ' (took ' + updateDuration + ' seconds)');
+        } catch (ex) {
+            var errorInfo = name + ' (' + ex.message || String(ex) + ')';
+            failed.push(errorInfo);
+            gs.error('Plugin update ▸ FAILED   ' + name + ' – ' + ex);
+        }
+    }
+
+    // If we didn't process all records, log that information
+    if (updateCount >= maxUpdatesPerRun && total > updateCount) {
+        gs.info('Plugin update process ▸ Processed maximum batch size of ' + maxUpdatesPerRun + 
+                ' plugins. There are ' + (total - updateCount) + ' updates remaining.');
+    }
+
+    var totalDuration = (new Date() - scriptStartTime) / 1000;
+    
+    gs.info('Plugin update summary ▸ Updated: ' + updated.length +
+            ', Skipped: ' + skipped.length +
+            ', Failed: '  + failed.length + 
+            ', Duration: ' + totalDuration + ' seconds');
+
+    if (failed.length > 0) {
+        gs.info('Plugin update failures ▸ ' + failed.join(', '));
+    }
+    
+    // Progress and any dependency checks are written to sys_batch_install_plan
+    // and sys_store_app_log once the first job kicks off.
+})();
+

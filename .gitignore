@@ -1,0 +1,21 @@
+# Node modules
+node_modules/
+
+# IDE files
+.idea/
+.vscode/
+*.sublime-*
+
+# Logs
+*.log
+npm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# ServiceNow specific
+.servicenow
+.sn-config 

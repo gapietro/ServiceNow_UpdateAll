@@ -1,0 +1,14 @@
+{
+  "name": "servicenow-updateall",
+  "version": "1.0.0",
+  "description": "A scheduled job that automatically updates all ServiceNow plugins to their latest versions",
+  "main": "sn_updateall.js",
+  "author": "Greg Pietro",
+  "license": "MIT",
+  "scripts": {
+    "deploy": "fluent deploy"
+  },
+  "dependencies": {
+    "@servicenow/cli": "latest"
+  }
+} 

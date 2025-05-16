@@ -1,0 +1,106 @@
+{
+  "version": "1.0.0",
+  "name": "ServiceNow UpdateAll Package",
+  "scope": "x_snc_updateall",
+  "components": {
+    "sys_script": [
+      {
+        "name": "UpdateAll Plugins Script",
+        "script": "sn_updateall.js"
+      }
+    ],
+    "sys_property": [
+      {
+        "name": "plugin.update.batch.size",
+        "description": "The plugin.update.batch.size system property defines the maximum number of plugins that the batch update script (sn_updateall.js) will process in a single execution. This property is essential when managing large-scale plugin updates to prevent transaction timeouts and system resource strain.  This Script is run via a schedule job UpdateAll Plugins Weekly Job",
+        "type": "integer",
+        "value": "600"
+      },
+      {
+        "name": "plugin.update.skip.list",
+        "description": "Comma-separated list of plugins to skip during automatic updates (by source ID or sys_id) for scheduled job UpdateAll Plugins Weekly Job",
+        "type": "string",
+        "value": ""
+      }
+    ],
+    "sysauto_script": [
+      {
+        "name": "UpdateAll Plugins Weekly Job",
+        "script": "sn_updateall.js",
+        "run_as": "system",
+        "schedule": "1970-01-01 00:00:00",
+        "condition": "",
+        "run_dayofmonth": "1",
+        "run_dayofweek": "1,7",
+        "run_month": "0",
+        "run_time": "00:00:00",
+        "run_type": "weekly",
+        "active": "true",
+        "description": "Updates all available plugins to their latest versions. Runs weekly on Saturday at midnight."
+      }
+    ],
+    "documentation": [
+      {
+        "name": "UpdateAll Plugins Documentation",
+        "content": "README.md"
+      }
+    ],
+    "sys_app": [
+      {
+        "name": "Plugin Update All",
+        "scope": "x_snc_updateall",
+        "version": "1.0.0",
+        "license": "creative_commons",
+        "short_description": "Automatically updates all ServiceNow plugins to their latest versions"
+      }
+    ],
+    "sys_user_role": [
+      {
+        "name": "x_snc_updateall.admin",
+        "description": "Administrators for the UpdateAll application",
+        "elevated_privilege": "true"
+      }
+    ],
+    "sys_script_include": [
+      {
+        "name": "UpdateAllUtils",
+        "script": "var UpdateAllUtils = Class.create();\nUpdateAllUtils.prototype = {\n    initialize: function() {\n    },\n\n    getAppClientsAndUpgraders: function() {\n        // This function exists to explicitly document the usage of plugin APIs\n        return {\n            appUpgrader: new sn_appclient.AppUpgrader()\n        };\n    },\n\n    type: 'UpdateAllUtils'\n};"
+      }
+    ],
+    "sys_security_acl": [
+      {
+        "name": "x_snc_updateall.plugin_updater",
+        "description": "Allow access to sys_store_app table for plugin updates",
+        "admin_overrides": "true",
+        "protection_policy": "read"
+      }
+    ],
+    "sys_security_acl_role": [
+      {
+        "security_acl": "x_snc_updateall.plugin_updater",
+        "role": "x_snc_updateall.admin",
+        "sys_class_name": "sys_security_acl_role"
+      }
+    ],
+    "sys_app_module": [
+      {
+        "name": "Plugin Update All",
+        "title": "Plugin Update All",
+        "link_type": "DIRECT",
+        "order": "100",
+        "active": "true",
+        "description": "Updates all available plugins to their latest versions"
+      }
+    ],
+    "sys_ui_action": [
+      {
+        "name": "Run Update All Now",
+        "action_name": "run_update_all",
+        "table": "sys_store_app",
+        "form_link": "true",
+        "condition": "current.update_available==true",
+        "script": "gs.include('sn_updateall.js');"
+      }
+    ]
+  }
+} 
