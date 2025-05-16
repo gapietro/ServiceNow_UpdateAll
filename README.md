@@ -74,7 +74,7 @@ This package can be deployed using the ServiceNow CLI/SDK. Follow these steps:
 
 3. **Configure your ServiceNow instance connection**
    ```bash
-   snc configure profile set
+   snc configure profile
    ```
    Follow the prompts to enter your:
    - Instance URL (e.g., https://yourinstance.service-now.com)
