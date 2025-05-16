@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<record_update>
+  <sys_app action="INSERT_OR_UPDATE">
+    <sys_id>af9980352b2122144271f21a6e91bf7f</sys_id>
+    <sys_scope display_value="x_snc_updateall">af9980352b2122144271f21a6e91bf7f</sys_scope>
+    <active>true</active>
+    <can_edit_in_studio>true</can_edit_in_studio>
+    <enforce_license>none</enforce_license>
+    <hide_on_ui>false</hide_on_ui>
+    <installed_as_dependency>false</installed_as_dependency>
+    <js_level>es_latest</js_level>
+    <licensable>true</licensable>
+    <license_category>none</license_category>
+    <license_model>none</license_model>
+    <package_json>x_snc_updateall/servicenow-updateall/1.0.0/package.json</package_json>
+    <name>ServiceNow UpdateAll Package</name>
+    <private>false</private>
+    <restrict_table_access>false</restrict_table_access>
+    <runtime_access_tracking>permissive</runtime_access_tracking>
+    <scope>x_snc_updateall</scope>
+    <scoped_administration>false</scoped_administration>
+    <source>x_snc_updateall</source>
+    <trackable>true</trackable>
+    <uninstall_blocked>false</uninstall_blocked>
+    <version>1.0.0</version>
+  </sys_app>
+</record_update>

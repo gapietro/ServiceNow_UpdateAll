@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<record_update>
+  <sys_module action="INSERT_OR_UPDATE">
+    <sys_scope>af9980352b2122144271f21a6e91bf7f</sys_scope>
+    <sys_id>3876f21cefb2434785e74e36d7cd5928</sys_id>
+    <path>x_snc_updateall/servicenow-updateall/1.0.0/package.json</path>
+    <external_source>false</external_source>
+    <content><![CDATA[{
+  "name": "servicenow-updateall",
+  "version": "1.0.0",
+  "description": "A scheduled job that automatically updates all ServiceNow plugins to their latest versions",
+  "main": "sn_updateall.js",
+  "author": "Greg Pietro",
+  "license": "MIT",
+  "scripts": {
+    "deploy": "fluent deploy"
+  },
+  "dependencies": {
+    "@servicenow/cli": "1.0.0"
+  }
+}]]></content>
+  </sys_module>
+</record_update>

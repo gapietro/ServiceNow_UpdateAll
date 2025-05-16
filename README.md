@@ -50,13 +50,13 @@ For environments with 600+ plugins to update:
 
 ## Deployment Instructions
 
-### Using ServiceNow CLI/SDK
+### Using ServiceNow SDK
 
-This package can be deployed using the ServiceNow CLI/SDK. Follow these steps:
+This package can be deployed using the ServiceNow SDK. Follow these steps:
 
 #### Prerequisites
-- Node.js (LTS version recommended)
-- ServiceNow CLI installed: `npm install -g @servicenow/cli`
+- Node.js (v18.16.1 or later recommended)
+- ServiceNow SDK installed: `npm install -g @servicenow/sdk`
 - Access to a ServiceNow instance with admin privileges
 
 #### Steps
@@ -67,56 +67,49 @@ This package can be deployed using the ServiceNow CLI/SDK. Follow these steps:
    cd servicenow-updateall
    ```
 
-2. **Install dependencies**
+2. **Initialize the project structure** (if now.config.json is not present)
+   ```bash
+   now-sdk init
+   ```
+   Follow the prompts to:
+   - Enter your application name (ServiceNow UpdateAll Package)
+   - Select the application scope (x_snc_updateall)
+   - Choose other options as needed
+
+3. **Install dependencies**
    ```bash
    npm install
    ```
 
-3. **Configure your ServiceNow instance connection**
+4. **Authenticate with your ServiceNow instance**
    ```bash
-   snc configure profile
+   now-sdk auth --add https://yourinstance.service-now.com --type oauth
    ```
-   Follow the prompts to enter your:
-   - Instance URL (e.g., https://yourinstance.service-now.com)
-   - Username
-   - Password
-   - Profile name (optional)
+   Follow the prompts to:
+   - Complete the authentication flow in your browser
+   - Copy and paste the authentication token when prompted
 
-4. **Deploy the application**
+5. **Build the application**
    ```bash
-   snc app deploy --app-name="x_snc_updateall" --username=your-username --password=your-password --url=https://your-instance.service-now.com
+   now-sdk build
    ```
-   
-   Alternatively, use your configured profile:
-   ```bash
-   snc app deploy --app-name="x_snc_updateall" --profile=your-profile-name
-   ```
+   This generates the installation artifacts required for deployment.
 
-5. **Verify installation**
+6. **Deploy the application**
    ```bash
-   snc app list --profile=your-profile-name | grep updateall
+   now-sdk install --url="https://yourinstance.service-now.com"
+   ```
+   or use the alias:
+   ```bash
+   now-sdk deploy --url="https://yourinstance.service-now.com"
    ```
 
-#### Advanced Deployment Options
+7. **Verify installation**
+   Connect to your instance and verify the application is installed under System Applications > Applications.
 
-- **Deploy to multiple instances**:
-  ```bash
-  snc app deploy --app-name="x_snc_updateall" --profile=dev,test,prod
-  ```
+### Using Studio
 
-- **Check deployment status**:
-  ```bash
-  snc app show-deployment-status --app-name="x_snc_updateall" --profile=your-profile
-  ```
-
-- **Deploying specific components**:
-  ```bash
-  snc component deploy --component="sys_script,sys_property" --app-scope="x_snc_updateall" --profile=your-profile
-  ```
-
-### Using Fluent UI
-
-You can also deploy using the Fluent UI by:
+You can also deploy using ServiceNow Studio by:
 1. Navigate to System Applications > Studio
 2. Click "Import From Source Control"
 3. Enter your repository URL and credentials

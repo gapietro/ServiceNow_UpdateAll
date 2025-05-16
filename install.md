@@ -2,8 +2,8 @@
 
 ## Prerequisites
 - ServiceNow instance with admin access
-- ServiceNow CLI with Fluent extension installed
-- Node.js and npm
+- ServiceNow SDK installed: `npm install -g @servicenow/sdk`
+- Node.js (v18.16.1 or later recommended)
 
 ## Installation Steps
 
@@ -13,32 +13,52 @@ git clone <repository-url>
 cd servicenow-updateall
 ```
 
-### 2. Configure Your ServiceNow Instance
+### 2. Initialize the Project Structure
+If the now.config.json file is not present, initialize the project:
 ```bash
-sn configure profile
+now-sdk init
 ```
-Follow the prompts to configure your ServiceNow instance connection.
+Follow the prompts to:
+- Enter your application name (ServiceNow UpdateAll Package)
+- Select the application scope (x_snc_updateall)
+- Choose other options as needed
 
-### 3. Deploy the Package
+### 3. Authenticate with Your ServiceNow Instance
 ```bash
-npm run deploy
+now-sdk auth --add https://yourinstance.service-now.com --type oauth
 ```
+Follow the OAuth authentication flow through your browser when prompted.
+
+### 4. Build the Application
+```bash
+now-sdk build
+```
+This step generates the installation artifacts required for deployment.
+
+### 5. Deploy the Package
+```bash
+now-sdk install --url="https://yourinstance.service-now.com"
+```
+Or use the alias:
+```bash
+now-sdk deploy --url="https://yourinstance.service-now.com"
+```
+
 This will deploy:
 - The UpdateAll script to your instance
 - The scheduled job (configured to run weekly on Saturday at midnight)
 - System properties configured with appropriate values:
   - `plugin.update.batch.size` = 600
   - `plugin.update.skip.list` = ""
-- Documentation
 - Required roles and access controls
 
-### 4. Verify Installation
+### 6. Verify Installation
 1. Check that the script is available in System Definition > Scripts - Background
 2. Verify the scheduled job exists in System Definition > Scheduled Jobs
 3. Confirm the system properties are set in System Properties > System Properties
 4. Verify the custom application "Plugin Update All" is installed in System Applications > Applications
 
-### 5. Permissions Setup
+### 7. Permissions Setup
 The package creates a custom role `x_snc_updateall.admin` with elevated privileges. To ensure proper functioning:
 
 1. Assign this role to any users who need to manually execute the update script
@@ -49,7 +69,7 @@ For enhanced security:
 - Consider using a dedicated service account instead of system
 - Review and adjust the ACLs if your instance has stricter security requirements
 
-### 6. Testing
+### 8. Testing
 You can manually run the script to test it:
 1. Navigate to System Definition > Scripts - Background
 2. Open the UpdateAll script
